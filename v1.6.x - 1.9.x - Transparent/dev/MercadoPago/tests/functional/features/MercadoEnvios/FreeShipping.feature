@@ -84,13 +84,13 @@ Feature: As a customer I want to have a section to calculate the shipping cost w
     And I wait for "20" seconds with "(0 === Ajax.activeRequestCount)"
     And I press "#review-buttons-container .button" element
     And I switch to the iframe "checkout_mercadopago"
-#    And I fill text field "user_id" with "test_user_2135227@testuser.com"
-#    And I fill text field "password" with "qatest5030"
-#    And I press "#init" input element
+    And I fill text field "user_id" with "test_user_2135227@testuser.com"
+    And I fill text field "password" with "qatest5030"
+    And I press "#init" input element
     And I fill the iframe shipping address fields
     And I press "#next" input element
     And I wait for "10" seconds
-    Then I should see element "span.ch-price" with text "Gratis."
+    Then I should see html "Gratis."
 
   @MercadoEnvios @FreeShippingCartRule
   Scenario: FreeShipping configured
