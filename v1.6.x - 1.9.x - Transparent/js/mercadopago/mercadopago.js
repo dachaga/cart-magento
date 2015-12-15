@@ -126,6 +126,7 @@ function defineInputs() {
     var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
     var data_checkout = document.querySelectorAll("[data-checkout]");
     var exclude_inputs = ["#cardId", "#securityCodeOCP"];
+    var disabled_inputs = [];
     var data_inputs = [];
 
     if (one_click_pay == true) {
@@ -144,7 +145,7 @@ function defineInputs() {
 
         exclude_inputs.push("#docType");
         exclude_inputs.push("#docNumber");
-        exclude_inputs.push("#issuer");
+        disabled_inputs.push("#issuer");
 
     }
     if (!this.issuerMandatory) {
@@ -160,6 +161,9 @@ function defineInputs() {
         if (exclude_inputs.indexOf($id) == -1) {
             document.querySelector(el_pai).removeAttribute('style');
             data_inputs.push($id);
+            if (disabled_inputs.indexOf($id) != -1) {
+                document.querySelector($id).disabled = "disabled";
+            }
         } else {
             document.querySelector(el_pai).style.display = 'none';
         }
@@ -240,6 +244,7 @@ function clearOptions() {
         var message_installment = document.querySelector(".mercadopago-text-installment").value;
 
         document.querySelector("#issuer__mp").style.display = 'none';
+        document.querySelector('#issuer__mp label').style.display = 'none';
         document.querySelector("#issuer").style.display = 'none';
         document.querySelector("#issuer").innerHTML = "";
 
@@ -432,6 +437,7 @@ function showCardIssuers(status, issuers) {
     issuersSelector.appendChild(fragment);
     issuersSelector.removeAttribute('disabled');
     document.querySelector("#issuer__mp").removeAttribute('style');
+    document.querySelector("#issuer__mp label").removeAttribute('style');
     document.querySelector("#issuer").removeAttribute('style');
 
     defineInputs();
