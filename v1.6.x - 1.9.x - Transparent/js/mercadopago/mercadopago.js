@@ -40,6 +40,9 @@ function initMercadoPagoJs() {
     if (site_id != 'MLM') {
         //caso não seja o mexico puxa os documentos aceitos
         Mercadopago.getIdentificationTypes();
+    } else {
+        var methods = getPaymentMethods();
+        setPaymentMethodsInfo(methods);
     }
 
     //add inputs para cada país
@@ -80,6 +83,21 @@ function initMercadoPagoJs() {
         }
         return true;
     });
+}
+
+function getPaymentMethods() {
+    var allMethods = Mercadopago.getPaymentMethods();
+    var allowedMethods = [];
+    for (var key in allMethods) {
+        var method = allMethods[key];
+        var typeId = method.payment_type_id;
+        if (typeId == 'debit_card' || typeId == 'credit_card' || typeId == 'prepaid_card') {
+            allowedMethods.push(method);
+        }
+    }
+
+    return allowedMethods;
+
 }
 
 function checkDocNumber(v) {
@@ -125,7 +143,7 @@ function defineInputs() {
     var site_id = document.querySelector('#mercadopago_checkout_custom .site_id').value;
     var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
     var data_checkout = document.querySelectorAll("[data-checkout]");
-    var exclude_inputs = ["#cardId", "#securityCodeOCP"];
+    var exclude_inputs = ["#cardId", "#securityCodeOCP","#paymentMethod"];
     var disabled_inputs = [];
     var data_inputs = [];
 
@@ -133,8 +151,8 @@ function defineInputs() {
 
         exclude_inputs = [
             "#cardNumber", "#issuer", "#cardExpirationMonth", "#cardExpirationYear",
-            "#cardholderName", "#docType", "#docNumber", "#securityCode"
-        ]
+            "#cardholderName", "#docType", "#docNumber", "#securityCode", "#paymentMethod"
+        ];
 
     } else if (site_id == 'MLB') {
 
@@ -146,6 +164,10 @@ function defineInputs() {
         exclude_inputs.push("#docType");
         exclude_inputs.push("#docNumber");
         disabled_inputs.push("#issuer");
+        var index = exclude_inputs.indexOf("#paymentMethod");
+        if (index > -1) {
+            exclude_inputs.splice(index, 1);
+        }
 
     }
     if (!this.issuerMandatory) {
@@ -578,6 +600,27 @@ function setInstallmentInfo(status, response) {
     } else {
         //mostra erro caso não tenha parcelas
         showMessageErrorForm(".error-payment-method-min-amount");
+    }
+}
+
+function setPaymentMethodsInfo(methods) {
+    //hide loaging
+    hideLoading();
+
+    var selectorPaymentMethods = jQuery("#paymentMethod");
+
+    selectorPaymentMethods.empty();
+
+    if (methods.length > 0) {
+        var message_choose = document.querySelector(".mercadopago-text-choice").value;
+
+        var option = new Option(message_choose + "... ", '');
+
+        selectorPaymentMethods.append(option);
+        for (var i = 0; i < methods.length; i++) {
+            option = new Option(methods[i].name, methods[i].id);
+            selectorPaymentMethods.append(option);
+        }
     }
 }
 
