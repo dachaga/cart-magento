@@ -43,6 +43,7 @@ function initMercadoPagoJs() {
     } else {
         var methods = getPaymentMethods();
         setPaymentMethodsInfo(methods);
+        addEvent(document.querySelector('select[data-checkout="paymentMethod"]'), 'change', setPaymentMethodId);
     }
 
     //add inputs para cada país
@@ -83,6 +84,15 @@ function initMercadoPagoJs() {
         }
         return true;
     });
+}
+
+function setPaymentMethodId(event) {
+    var paymentMethodSelector = document.querySelector('select[data-checkout="paymentMethod"]');
+    var paymentMethodId = paymentMethodSelector.value;
+    if (paymentMethodId != '') {
+        var payment_method_id = document.querySelector('.payment_method_id');
+        payment_method_id.value = paymentMethodId;
+    }
 }
 
 function getPaymentMethods() {
@@ -366,7 +376,15 @@ function setPaymentMethodInfo(status, response) {
 
         //adiciona o payment_method no form
         var payment_method_id = form.querySelector('.payment_method_id');
-        payment_method_id.value = response[0].id;
+        if (response[0].id != undefined) {
+            var paymentMethodId = response[0].id;
+            var site_id = document.querySelector('.site_id').value;
+            if (paymentMethodId != '' && site_id == 'MLM')  {
+                var paymentMethod = form.querySelector('#paymentMethod');
+                paymentMethod.value=paymentMethodId;
+            }
+            payment_method_id.value = paymentMethodId;
+        }
 
         //ADICIONA A BANDEIRA DO CARTÃO DENTRO DO INPUT
         var one_click_pay = document.querySelector('#mercadopago_checkout_custom #one_click_pay_mp').value;
