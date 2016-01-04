@@ -816,7 +816,7 @@ class FeatureContext
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
         $element = $this->findElement('#checkout-review-table');
 
-        $this->_stringMatch($element->getText(), 'Financing Cost');
+        $this->_stringMatch($element->getHtml(), 'Financing Cost');
     }
 
     /**

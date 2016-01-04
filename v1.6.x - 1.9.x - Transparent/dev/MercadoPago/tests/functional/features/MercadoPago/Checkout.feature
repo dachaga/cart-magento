@@ -36,8 +36,6 @@ Scenario: See MercadoPago option as a payment method
     And I fill text field "securityCodeOCP" with "123"
 
     When I press "#payment-buttons-container .button" element
-    And I wait for "10" seconds
-
     Then I should see financing cost detail
 
   @frontend @Availability @StandardActive
