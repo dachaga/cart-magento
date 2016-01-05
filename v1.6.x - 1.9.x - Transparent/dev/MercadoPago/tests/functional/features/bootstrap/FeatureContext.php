@@ -814,7 +814,7 @@ class FeatureContext
     public function iShouldSeeFinancingCostDetail()
     {
         $this->getSession()->wait(20000, '(0 === Ajax.activeRequestCount)');
-        $element = $this->findElement('#checkout-review-table');
+        $element = $this->findElement('#checkout-review-table-wrapper table');
 
         $this->_stringMatch($element->getText(), 'Financing Cost');
     }
